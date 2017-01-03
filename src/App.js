@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
+import { Button, Input, Row, Col, Card, Timeline, Icon, Tag } from 'antd';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <textarea>
-          Alex
+const exampleTimesheet = `Alex
 1003+1804
 1014+1252+1322+2000
 1009+1803
@@ -75,8 +71,114 @@ week
 
 Matt S
 1500+2017
-1500+2000
-        </textarea>
+1500+2000`
+
+class Timecard extends Component {
+  render(){
+    return (
+      <Card title="Cecilia" extra={<b>30.68h</b>}>
+        <Timeline>
+          <Timeline.Item>
+            11:02am-04:48pm<br/>
+            05:44pm-07:52pm
+            <span style={{float: 'right'}}><small>7.90h</small></span>
+          </Timeline.Item>
+
+          <Timeline.Item>
+            11:02am-04:48pm
+            <span style={{float: 'right'}}><small>5.77h</small></span>
+          </Timeline.Item>
+          <Timeline.Item>
+            05:44pm-07:52pm
+            <span style={{float: 'right'}}><small>2.13h</small></span>
+          </Timeline.Item>
+          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
+            Day total
+            <span style={{float: 'right'}}>7.90h</span>
+          </Timeline.Item>
+          <Timeline.Item dot={<Icon type="calendar" style={{ fontSize: '16px' }} />}>
+             Week total
+            <span style={{float: 'right'}}><b>7.90h</b></span>
+          </Timeline.Item>
+        </Timeline>
+
+        <Timeline>
+          <Timeline.Item>
+            11:35am-08:01pm
+            <span style={{float: 'right'}}><small>8.33</small></span>
+          </Timeline.Item>
+          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
+            Day total <span style={{float: 'right'}}>8.43</span>
+          </Timeline.Item>
+          <Timeline.Item>
+            05:06pm-08:00pm
+            <span style={{float: 'right'}}><small>2.8</small></span>
+          </Timeline.Item>
+          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
+            Day total <span style={{float: 'right'}}>2.9</span>
+          </Timeline.Item>
+          <Timeline.Item>
+            05:56pm-07:59pm
+            <span style={{float: 'right'}}><small>1.95</small></span>
+          </Timeline.Item>
+          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
+            Day total <span style={{float: 'right'}}>2.05</span>
+          </Timeline.Item>
+          <Timeline.Item>
+            05:30pm-08:20pm
+            <span style={{float: 'right'}}><small>2.73</small></span>
+          </Timeline.Item>
+          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
+            Day total <span style={{float: 'right'}}>2.83</span>
+          </Timeline.Item>
+          <Timeline.Item>
+            11:29am-06:03pm
+            <span style={{float: 'right'}}><small>6.47</small></span>
+          </Timeline.Item>
+          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
+            Day total <span style={{float: 'right'}}>6.57</span>
+          </Timeline.Item>
+          <Timeline.Item dot={<Icon type="calendar" style={{ fontSize: '16px' }} />}>
+            Week total <span style={{float: 'right'}}><b>22.78</b></span>
+          </Timeline.Item>
+
+        </Timeline>
+      </Card>
+    );
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <Row gutter={16}>
+          <Col span={6}>
+            <Input
+              type="textarea"
+              placeholder=""
+              defaultValue={exampleTimesheet}
+              autosize={{ minRows: 2 }} />
+          </Col>
+          <Col span={18}>
+            <h1>2017-01-02</h1>
+            <Row gutter={8}>
+              <Col span={6}>
+                <Timecard />
+              </Col>
+              <Col span={6}>
+                <Timecard />
+              </Col>
+              <Col span={6}>
+                <Timecard />
+              </Col>
+              <Col span={6}>
+                <Timecard />
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+
       </div>
     );
   }
