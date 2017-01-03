@@ -1,11 +1,26 @@
 @import '~antd/dist/antd.css';
 
+@media print {
+  .noPrint {
+    display:none;
+  }
+}
+
+.ant-card{
+  margin-bottom: 10px;
+  page-break-inside: avoid;
+}
+
 .ant-timeline-item{
   padding: 0;
 }
 
 .ant-card-body{
   padding-bottom: 0;
+}
+
+.ant-timeline-item-last .ant-timeline-item-content{
+  min-height: 34px;
 }
 
 .ant-col-6:nth-child(4n+1){

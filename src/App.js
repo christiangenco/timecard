@@ -4,9 +4,13 @@ import { Layout, Button, Input, Row, Col, Card, Timeline, Icon, Tag } from 'antd
 const { Header, Footer, Sider, Content } = Layout;
 const strftime = require('strftime');
 
+function insert(str, index, value) {
+  return str.substr(0, index) + value + str.substr(index);
+}
+
 const exampleTimesheet = `Alex
 1003+1804
-1014+1252+1322+2000
+1014+1252 1322+2000
 1009+1803
 week
 1000+2000
@@ -19,7 +23,7 @@ week
 1500+1802
 
 Cecilia
-1102+1648+1744+1952
+1102+1648 1744+1952
 week
 1135+2001
 1706+2000
@@ -36,20 +40,20 @@ week
 1000+1500
 
 Elise
-1002+1530+1600+2000
-1002+1616+1646+2000
-1006+1200+1230+1803
+1002+1530 1600+2000
+1002+1616 1646+2000
+1006+1200 1230+1803
 week
-1002+1200+1230+2000
-1007+1200+1230+2000
-1001+1200+1230+2033
+1002+1200 1230+2000
+1007+1200 1230+2000
+1001+1200 1230+2033
 955+1500
 
 Janey
 1500+2000
 
 Jocelyn
-955+1200+1230+2000
+955+1200 1230+2000
 1000+1458
 1000+2000
 1434+2000
@@ -63,8 +67,8 @@ week
 1500+2000
 
 Matt K
-1000+1540+1610+2000
-1000+1630+1700+2000
+1000+1540 1610+2000
+1000+1630 1700+2000
 954+1536
 week
 1000+2000
@@ -78,7 +82,7 @@ Matt S
 class Timecard extends Component {
   render(){
     return (
-      <Card title={this.props.name} extra={<b>{this.props.total}</b>}>
+      <Card title={this.props.name} extra={<b>{this.props.total.toFixed(2)}</b>}>
         {this.props.weeks.map((week, index) => {
           return (
             <div key={index}>
@@ -86,7 +90,7 @@ class Timecard extends Component {
                 {week.days.map((day, index) => {
                   return (
                     <Timeline.Item key={index} dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
-                      <span style={{float: 'right'}}><small>{day.total}h</small></span>
+                      <span style={{float: 'right'}}><small>{day.total.toFixed(2)}h</small></span>
                       {day.timespans.map((t, index) => {
                         return <span key={index} style={{display: "block"}}>{strftime("%H:%M", t.start)}-{strftime("%H:%M", t.stop)}</span>;
                       })}
@@ -94,10 +98,10 @@ class Timecard extends Component {
                   );
                 })}
               </Timeline>
-              <div style={{marginTop: -20}}></div>
+              <div style={{marginTop: -10}}></div>
               <Timeline.Item className="ant-timeline-item-last" dot={<Icon type="calendar" style={{ fontSize: '16px'}} />}>
                  Week total
-                <span style={{float: 'right'}}><b>{week.total}h</b></span>
+                <span style={{float: 'right'}}><b>{week.total.toFixed(2)}h</b></span>
               </Timeline.Item>
             </div>
           );
@@ -126,23 +130,34 @@ class App extends Component {
       const name = lines.shift();
       let total = 0;
 
-      // lol
+      // lol joining and splitting again
       const weeks = lines.join("\n").split(/\nweek\n/).map(wline => wline.split("\n")).map(weekDays => {
         let weekTotal = 0;
         const days = weekDays.map(line => {
           let dayTotal = 0;
-          const timespans = line.split(/a/).map(timespanString => {
-            const start = new Date();
-            const stop = new Date();
+
+          const timespans = line.split(/\s+/).map(timespanString => {
+            let [start, stop] = timespanString.split(/[-+]/);
+            if(start.length < 4) start = "0" + start;
+            if(stop.length < 4) stop = "0" + stop;
+
+            start = insert(start, 2, ':');
+            stop  = insert(stop, 2, ':');
+            start = new Date(`2017-01-03 ${start}:00`);
+            stop  = new Date(`2017-01-03 ${stop}:00`);
+
+            dayTotal += (stop - start) / 1000 / 60 / 60;
 
             return {start, stop};
           });
+
+          weekTotal += dayTotal;
           return {total: dayTotal, timespans};
         });
 
+        total += weekTotal;
         return {total: weekTotal, days}
       });
-      console.dir({name, weeks});
 
       return {
         name,
@@ -198,7 +213,7 @@ class App extends Component {
       <Layout>
         <Content>
           <Row gutter={16}>
-            <Col span={6}>
+            <Col span={6} className="noPrint">
               <Input
                 type="textarea"
                 placeholder=""
