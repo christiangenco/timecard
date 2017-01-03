@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Button, Input, Row, Col, Card, Timeline, Icon, Tag } from 'antd';
+import { Layout, Button, Input, Row, Col, Card, Timeline, Icon, Tag } from 'antd';
+const { Header, Footer, Sider, Content } = Layout;
+const strftime = require('strftime');
 
 const exampleTimesheet = `Alex
 1003+1804
@@ -76,110 +78,104 @@ Matt S
 class Timecard extends Component {
   render(){
     return (
-      <Card title="Cecilia" extra={<b>30.68h</b>}>
-        <Timeline>
-          <Timeline.Item>
-            11:02am-04:48pm<br/>
-            05:44pm-07:52pm
-            <span style={{float: 'right'}}><small>7.90h</small></span>
-          </Timeline.Item>
+      <Card title={this.props.name} extra={<b>{this.props.total}</b>}>
+        {this.props.weeks.map((week, index) => {
+          return (
+            <Timeline key={index}>
+              {week.days.map((day, index) => {
+                return (
+                  <Timeline.Item key={index} dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
+                    <span style={{float: 'right'}}><small>{day.total}h</small></span>
+                    {day.timespans.map((t, index) => {
+                      return <span key={index} style={{display: "block"}}>{strftime("%H:%M", t.start)}-{strftime("%H:%M", t.stop)}</span>;
+                    })}
+                  </Timeline.Item>
+                );
+              })}
 
-          <Timeline.Item>
-            11:02am-04:48pm
-            <span style={{float: 'right'}}><small>5.77h</small></span>
-          </Timeline.Item>
-          <Timeline.Item>
-            05:44pm-07:52pm
-            <span style={{float: 'right'}}><small>2.13h</small></span>
-          </Timeline.Item>
-          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
-            Day total
-            <span style={{float: 'right'}}>7.90h</span>
-          </Timeline.Item>
-          <Timeline.Item dot={<Icon type="calendar" style={{ fontSize: '16px' }} />}>
-             Week total
-            <span style={{float: 'right'}}><b>7.90h</b></span>
-          </Timeline.Item>
-        </Timeline>
-
-        <Timeline>
-          <Timeline.Item>
-            11:35am-08:01pm
-            <span style={{float: 'right'}}><small>8.33</small></span>
-          </Timeline.Item>
-          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
-            Day total <span style={{float: 'right'}}>8.43</span>
-          </Timeline.Item>
-          <Timeline.Item>
-            05:06pm-08:00pm
-            <span style={{float: 'right'}}><small>2.8</small></span>
-          </Timeline.Item>
-          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
-            Day total <span style={{float: 'right'}}>2.9</span>
-          </Timeline.Item>
-          <Timeline.Item>
-            05:56pm-07:59pm
-            <span style={{float: 'right'}}><small>1.95</small></span>
-          </Timeline.Item>
-          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
-            Day total <span style={{float: 'right'}}>2.05</span>
-          </Timeline.Item>
-          <Timeline.Item>
-            05:30pm-08:20pm
-            <span style={{float: 'right'}}><small>2.73</small></span>
-          </Timeline.Item>
-          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
-            Day total <span style={{float: 'right'}}>2.83</span>
-          </Timeline.Item>
-          <Timeline.Item>
-            11:29am-06:03pm
-            <span style={{float: 'right'}}><small>6.47</small></span>
-          </Timeline.Item>
-          <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
-            Day total <span style={{float: 'right'}}>6.57</span>
-          </Timeline.Item>
-          <Timeline.Item dot={<Icon type="calendar" style={{ fontSize: '16px' }} />}>
-            Week total <span style={{float: 'right'}}><b>22.78</b></span>
-          </Timeline.Item>
-
-        </Timeline>
+              <Timeline.Item dot={<Icon type="calendar" style={{ fontSize: '16px' }} />}>
+                 Week total
+                <span style={{float: 'right'}}><b>{week.total}h</b></span>
+              </Timeline.Item>
+            </Timeline>
+          );
+        })}
       </Card>
     );
   }
 }
 
 class App extends Component {
+  timecardData() {
+    return [
+      {
+        name: "Cecilia lol",
+        total: 30.68,
+        weeks: [
+          {
+            total: 7.9,
+            days: [
+              {
+                timespans: [
+                  {
+                    start: new Date(),
+                    stop: new Date(),
+                  },
+                  {
+                    start: new Date(),
+                    stop: new Date(),
+                  },
+                ],
+                total: 7.9,
+              }
+            ]
+          },
+          {
+            total: 22.78,
+            days: [
+              {
+                timespans: [
+                  {
+                    start: new Date(),
+                    stop: new Date(),
+                  },
+                ],
+                total: 7.9,
+              }
+            ]
+          },
+        ],
+      },
+    ]
+  }
+
   render() {
     return (
-      <div className="App">
-        <Row gutter={16}>
-          <Col span={6}>
-            <Input
-              type="textarea"
-              placeholder=""
-              defaultValue={exampleTimesheet}
-              autosize={{ minRows: 2 }} />
-          </Col>
-          <Col span={18}>
-            <h1>2017-01-02</h1>
-            <Row gutter={8}>
-              <Col span={6}>
-                <Timecard />
-              </Col>
-              <Col span={6}>
-                <Timecard />
-              </Col>
-              <Col span={6}>
-                <Timecard />
-              </Col>
-              <Col span={6}>
-                <Timecard />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-
-      </div>
+      <Layout>
+        <Content>
+          <Row gutter={16}>
+            <Col className={"gutter-row"} span={6}>
+              <Input
+                type="textarea"
+                placeholder=""
+                defaultValue={exampleTimesheet}
+                autosize={{ minRows: 2 }} />
+            </Col>
+            <Col className={"gutter-row"} span={18}>
+              <h1><Input defaultValue={"2017-01-03"} /></h1>
+              <Row gutter={8}>
+                {this.timecardData().map((timecard, index) => {
+                  return (
+                    <Col className={"gutter-row"} span={6} key={index}>
+                      <Timecard {...timecard} />
+                    </Col>
+                  );
+                })}
+              </Row>
+            </Col>
+          </Row>
+        </Content>
+      </Layout>
     );
   }
 }
