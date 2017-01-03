@@ -81,23 +81,25 @@ class Timecard extends Component {
       <Card title={this.props.name} extra={<b>{this.props.total}</b>}>
         {this.props.weeks.map((week, index) => {
           return (
-            <Timeline key={index}>
-              {week.days.map((day, index) => {
-                return (
-                  <Timeline.Item key={index} dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
-                    <span style={{float: 'right'}}><small>{day.total}h</small></span>
-                    {day.timespans.map((t, index) => {
-                      return <span key={index} style={{display: "block"}}>{strftime("%H:%M", t.start)}-{strftime("%H:%M", t.stop)}</span>;
-                    })}
-                  </Timeline.Item>
-                );
-              })}
-
-              <Timeline.Item dot={<Icon type="calendar" style={{ fontSize: '16px' }} />}>
+            <div key={index}>
+              <Timeline>
+                {week.days.map((day, index) => {
+                  return (
+                    <Timeline.Item key={index} dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
+                      <span style={{float: 'right'}}><small>{day.total}h</small></span>
+                      {day.timespans.map((t, index) => {
+                        return <span key={index} style={{display: "block"}}>{strftime("%H:%M", t.start)}-{strftime("%H:%M", t.stop)}</span>;
+                      })}
+                    </Timeline.Item>
+                  );
+                })}
+              </Timeline>
+              <div style={{marginTop: -20}}></div>
+              <Timeline.Item className="ant-timeline-item-last" dot={<Icon type="calendar" style={{ fontSize: '16px'}} />}>
                  Week total
                 <span style={{float: 'right'}}><b>{week.total}h</b></span>
               </Timeline.Item>
-            </Timeline>
+            </div>
           );
         })}
       </Card>
@@ -106,7 +108,49 @@ class Timecard extends Component {
 }
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      timesheet: exampleTimesheet,
+    };
+  }
+
+  timesheetChange(event) {
+    this.setState({timesheet: event.target.value});
+  }
+
   timecardData() {
+    return this.state.timesheet.split(/\n\n+/).map(person => {
+      const lines = person.split(/\n/);
+      const name = lines.shift();
+      let total = 0;
+
+      // lol
+      const weeks = lines.join("\n").split(/\nweek\n/).map(wline => wline.split("\n")).map(weekDays => {
+        let weekTotal = 0;
+        const days = weekDays.map(line => {
+          let dayTotal = 0;
+          const timespans = line.split(/a/).map(timespanString => {
+            const start = new Date();
+            const stop = new Date();
+
+            return {start, stop};
+          });
+          return {total: dayTotal, timespans};
+        });
+
+        return {total: weekTotal, days}
+      });
+      console.dir({name, weeks});
+
+      return {
+        name,
+        total,
+        weeks,
+      }
+    });
+
     return [
       {
         name: "Cecilia lol",
@@ -154,14 +198,16 @@ class App extends Component {
       <Layout>
         <Content>
           <Row gutter={16}>
-            <Col className={"gutter-row"} span={6}>
+            <Col span={6}>
               <Input
                 type="textarea"
                 placeholder=""
-                defaultValue={exampleTimesheet}
+                // defaultValue={exampleTimesheet}
+                value={this.state.timesheet}
+                onChange={this.timesheetChange.bind(this)}
                 autosize={{ minRows: 2 }} />
             </Col>
-            <Col className={"gutter-row"} span={18}>
+            <Col span={18}>
               <h1><Input defaultValue={"2017-01-03"} /></h1>
               <Row gutter={8}>
                 {this.timecardData().map((timecard, index) => {

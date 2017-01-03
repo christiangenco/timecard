@@ -7,3 +7,8 @@
 .ant-card-body{
   padding-bottom: 0;
 }
+
+.ant-col-6:nth-child(4n+1){
+  clear: both;
+  /*background-color: red;*/
+}
