@@ -222,7 +222,7 @@ class App extends Component {
                 onChange={this.timesheetChange.bind(this)}
                 autosize={{ minRows: 2 }} />
             </Col>
-            <Col span={18}>
+            <Col className="printFullWidth" span={18}>
               <h1><Input defaultValue={"2017-01-03"} /></h1>
               <Row gutter={8}>
                 {this.timecardData().map((timecard, index) => {

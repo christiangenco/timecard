@@ -4,6 +4,10 @@
   .noPrint {
     display:none;
   }
+
+  .printFullWidth{
+    width: 100%;
+  }
 }
 
 .ant-card{
