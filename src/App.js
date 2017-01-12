@@ -8,7 +8,7 @@ function insert(str, index, value) {
   return str.substr(0, index) + value + str.substr(index);
 }
 
-const exampleTimesheet = `Alex
+const exampleTimesheet = `Harry
 1003+1804
 1014+1252 1322+2000
 1009+1803
@@ -16,13 +16,13 @@ week
 1000+2000
 1000+2000
 
-Bonnie
+Ron
 1501+2000
 1000+1530
 week
 1500+1802
 
-Cecilia
+Hermione
 1102+1648 1744+1952
 week
 1135+2001
@@ -31,7 +31,7 @@ week
 1730+2020
 1129+1803
 
-Chris
+Fred
 1000+1500
 1000+1500
 955+1528
@@ -39,7 +39,7 @@ week
 1000+1525
 1000+1500
 
-Elise
+George
 1002+1530 1600+2000
 1002+1616 1646+2000
 1006+1200 1230+1803
@@ -49,35 +49,9 @@ week
 1001+1200 1230+2033
 955+1500
 
-Janey
+Ginny
 1500+2000
-
-Jocelyn
-955+1200 1230+2000
-1000+1458
-1000+2000
-1434+2000
-
-Kristina
-1500+2016
-1000+1500
-1004+1625
-week
-1503+2000
-1500+2000
-
-Matt K
-1000+1540 1610+2000
-1000+1630 1700+2000
-954+1536
-week
-1000+2000
-1000+1627
-1000+1850
-
-Matt S
-1500+2017
-1500+2000`
+`
 
 class Timecard extends Component {
   render(){
