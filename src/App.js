@@ -125,46 +125,54 @@ class App extends Component {
   }
 
   timecardData() {
-    return this.state.timesheet.split(/\n\n+/).map(person => {
-      const lines = person.split(/\n/);
-      const name = lines.shift();
-      let total = 0;
+    // try{
+      return this.state.timesheet.split(/\n\n+/).map(person => {
+        const lines = person.split(/\n/);
+        const name = lines.shift();
+        let total = 0;
 
-      // lol joining and splitting again
-      const weeks = lines.join("\n").split(/\nweek\n/).map(wline => wline.split("\n")).map(weekDays => {
-        let weekTotal = 0;
-        const days = weekDays.map(line => {
-          let dayTotal = 0;
+        // lol joining and splitting again
+        const weeks = lines.join("\n").split(/\nweek\n/).map(wline => wline.split("\n")).map(weekDays => {
+          let weekTotal = 0;
+          const days = weekDays.map(line => {
+            let dayTotal = 0;
 
-          const timespans = line.split(/\s+/).map(timespanString => {
-            let [start, stop] = timespanString.split(/[-+]/);
-            if(start.length < 4) start = "0" + start;
-            if(stop.length < 4) stop = "0" + stop;
+            const timespans = line.split(/\s+/).map(timespanString => {
+              let [start, stop] = timespanString.split(/[-+]/);
 
-            start = insert(start, 2, ':');
-            stop  = insert(stop, 2, ':');
-            start = new Date(`2017-01-03 ${start}:00`);
-            stop  = new Date(`2017-01-03 ${stop}:00`);
+              if(start && stop){
+                if(start.length < 4) start = "0" + start;
+                if(stop.length < 4) stop = "0" + stop;
 
-            dayTotal += (stop - start) / 1000 / 60 / 60;
+                start = insert(start, 2, ':');
+                stop  = insert(stop, 2, ':');
+                start = new Date(`2017-01-03 ${start}:00`);
+                stop  = new Date(`2017-01-03 ${stop}:00`);
 
-            return {start, stop};
+                dayTotal += (stop - start) / 1000 / 60 / 60;
+              }
+
+              return {start, stop};
+            });
+
+            weekTotal += dayTotal;
+            return {total: dayTotal, timespans};
           });
 
-          weekTotal += dayTotal;
-          return {total: dayTotal, timespans};
+          total += weekTotal;
+          return {total: weekTotal, days}
         });
 
-        total += weekTotal;
-        return {total: weekTotal, days}
+        return {
+          name,
+          total,
+          weeks,
+        }
       });
-
-      return {
-        name,
-        total,
-        weeks,
-      }
-    });
+    // }catch(e){
+    //   console.info("caught");
+    //   return [];
+    // }
 
     return [
       {
