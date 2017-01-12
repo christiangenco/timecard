@@ -1,5 +1,9 @@
 @import '~antd/dist/antd.css';
 
+body, html{
+  background-color: #ececec;
+}
+
 @media print {
   .noPrint {
     display:none;
