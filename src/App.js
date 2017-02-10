@@ -8,7 +8,7 @@ function insert(str, index, value) {
   return str.substr(0, index) + value + str.substr(index);
 }
 
-const exampleTimesheet = `Harry
+let exampleTimesheet = `Harry
 1003+1804
 1014+1252 1322+2000
 1009+1803
@@ -52,6 +52,8 @@ week
 Ginny
 1500+2000
 `
+// exampleTimesheet = `Harry
+// 2359+0001`
 
 class Timecard extends Component {
   render(){
@@ -123,7 +125,12 @@ class App extends Component {
                 start = new Date(`2017-01-03 ${start}:00`);
                 stop  = new Date(`2017-01-03 ${stop}:00`);
 
-                dayTotal += (stop - start) / 1000 / 60 / 60;
+                const delta = (stop - start) / 1000 / 60 / 60;
+
+                // if we loop around past midnight
+                if(delta < 0) dayTotal += 24;
+
+                dayTotal += delta;
               }
 
               return {start, stop};
