@@ -1,1 +1,1 @@
-npm start
+yarnpkg start
